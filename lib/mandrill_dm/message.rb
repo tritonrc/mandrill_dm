@@ -1,4 +1,5 @@
 require 'base64'
+require 'json'
 
 module MandrillDm
   class Message # rubocop:disable ClassLength
@@ -63,6 +64,17 @@ module MandrillDm
 
     def merge_language
       return_string_value(:merge_language)
+    end
+
+    def metadata
+      return nil if mail[:metadata].nil?
+      # Hash#to_s returns something in the form { 'key => 'value', ...} so
+      # convert '=>' in ':' and then JSON.parse can interpret it
+      # Primitive but effective unless of course your metadata contains '=>' or
+      # your metadata contains something other than primitives (strings,
+      # symbols, numbers, or arrays)
+      # Could also use 'eval' but that seems intrinsically evil.
+      JSON.parse mail[:metadata].to_s.gsub '=>', ':'
     end
 
     def preserve_recipients
@@ -131,6 +143,7 @@ module MandrillDm
         inline_css: inline_css,
         merge: merge,
         merge_language: merge_language,
+        metadata: metadata,
         preserve_recipients: preserve_recipients,
         return_path_domain: return_path_domain,
         signing_domain: signing_domain,

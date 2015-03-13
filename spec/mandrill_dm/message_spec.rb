@@ -246,7 +246,26 @@ describe MandrillDm::Message do
   end
 
   pending '#merge_vars'
-  pending '#metadata'
+
+  describe '#metadata' do
+    it 'takes a hash of metadata' do
+      # Need to specify with => to ensure we get string keys and not symbols
+      # As we perform a primitive gsub and JSON parse to get the hash back
+      mdata = {
+        'hello' => 'world',
+        'color' => 'blue'
+      }
+      mail = new_mail(metadata: mdata)
+      message = described_class.new(mail)
+      expect(message.metadata).to eq(mdata)
+    end
+
+    it 'does not take metadata value' do
+      mail = new_mail
+      message = described_class.new(mail)
+      expect(message.metadata).to be_nil
+    end
+  end
 
   describe '#preserve_recipients' do
     it 'takes a preserve_recipients with true' do
