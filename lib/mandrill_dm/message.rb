@@ -179,7 +179,9 @@ module MandrillDm
     # Returns a hash of extra headers (not complete)
     def combine_extra_header_fields # rubocop:disable MethodLength
       %w(
+        In-Reply-To
         Reply-To
+        References
         X-MC-BccAddress
         X-MC-GoogleAnalytics
         X-MC-GoogleAnalyticsCampaign
